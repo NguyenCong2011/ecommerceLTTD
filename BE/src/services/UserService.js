@@ -50,7 +50,6 @@ const loginUser = (userLogin) => {
                 })
             }
             const comparePassword = bcrypt.compareSync(password, checkUser.password)
-
             if (!comparePassword) {
                 resolve({
                     status: 'ERR',
@@ -61,12 +60,10 @@ const loginUser = (userLogin) => {
                 id: checkUser.id,
                 isAdmin: checkUser.isAdmin
             })
-
             const refresh_token = await genneralRefreshToken({
                 id: checkUser.id,
                 isAdmin: checkUser.isAdmin
             })
-
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
@@ -91,7 +88,6 @@ const updateUser = (id, data) => {
                     message: 'The user is not defined'
                 })
             }
-
             const updatedUser = await User.findByIdAndUpdate(id, data, { new: true })
             resolve({
                 status: 'OK',
@@ -146,11 +142,11 @@ const deleteManyUser = (ids) => {
 const getAllUser = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allUser = await User.find().sort({createdAt: -1, updatedAt: -1})
+            const result = await User.find().sort({createdAt: -1, updatedAt: -1})
             resolve({
                 status: 'OK',
                 message: 'Success',
-                data: allUser
+                data: result
             })
         } catch (e) {
             reject(e)

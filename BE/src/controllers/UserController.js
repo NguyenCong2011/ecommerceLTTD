@@ -33,7 +33,7 @@ const createUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body
+        const {  email, password,  } = req.body
         const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
         const isCheckEmail = reg.test(email)
         if (!email || !password) {
@@ -48,14 +48,17 @@ const loginUser = async (req, res) => {
             })
         }
         const result = await UserService.loginUser(req.body)
-        const { refresh_token, ...newReponse } = result
-        res.cookie('refresh_token', refresh_token, {
-            httpOnly: true,
-            secure: false,
-            sameSite: 'strict',
-            path: '/',
+        const { refresh_token, access_token } = result
+        // res.cookie('refresh_token', refresh_token, {
+        //     httpOnly: true,
+        //     secure: false,
+        //     sameSite: 'strict',
+        //     path: '/',
+        // })
+        return res.status(200).json({
+            access_token,
+            refresh_token
         })
-        return res.status(200).json({...newReponse, refresh_token})
     } catch (e) {
         return res.status(404).json({
             message: e
@@ -73,7 +76,7 @@ const updateUser = async (req, res) => {
                 message: 'The userId is required'
             })
         }
-        const response = await UserService.updateUser(userId, data)
+        const response = await UserService.updateUser(userId, data)//userId là của thăn mongo tụ tạo còn data là do mình truyền
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({
@@ -157,8 +160,8 @@ const refreshToken = async (req, res) => {
                 message: 'The token is required'
             })
         }
-        const response = await JwtService.refreshTokenJwtService(token)
-        return res.status(200).json(response)
+        const result = await JwtService.refreshTokenJwtService(token)
+        return res.status(200).json(result)
     } catch (e) {
         return res.status(404).json({
             message: e

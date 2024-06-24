@@ -5,12 +5,12 @@ const { authMiddleWare, authUserMiddleWare } = require("../middleware/authMiddle
 
 router.post('/create', userController.createUser)
 router.post('/loginUser', userController.loginUser)
-router.post('/log-out', userController.logoutUser)
-router.put('/update-user/:id', authUserMiddleWare, userController.updateUser)
-router.delete('/delete-user/:id', authMiddleWare, userController.deleteUser)
+router.post('/logout', userController.logoutUser)
+router.put('/updateuser/:id', authUserMiddleWare, userController.updateUser)
+router.delete('/deleteuser/:id', authMiddleWare, userController.deleteUser)
 router.get('/getAll', authMiddleWare, userController.getAllUser)
-router.get('/get-details/:id', authUserMiddleWare, userController.getDetailsUser)
-router.post('/refresh-token', userController.refreshToken)
-router.post('/delete-many', authMiddleWare, userController.deleteMany)
+router.get('/getdetails/:id', authUserMiddleWare, userController.getDetailsUser)
+router.get('/refreshtoken',authMiddleWare, userController.refreshToken)
+router.post('/deletemany', authMiddleWare, userController.deleteMany)
 
 module.exports = router
