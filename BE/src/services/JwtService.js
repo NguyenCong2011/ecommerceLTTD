@@ -31,7 +31,6 @@ const refreshTokenJwtService = (token) => {
                     id: payload?.id,
                     isAdmin: payload?.isAdmin
                 })
-                console.log('>>>>>>>>check access_token',access_token);
                 resolve({
                     status: 'OK',
                     message: 'SUCESS',

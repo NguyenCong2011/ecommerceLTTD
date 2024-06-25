@@ -3,10 +3,10 @@ const JwtService = require('../services/JwtService')
 
 const createUser = async (req, res) => {
     try {
-        const { name, email, password, confirmPassword, phone } = req.body
+        const {name,  email, password, confirmPassword } = req.body
         const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
         const isCheckEmail = reg.test(email)
-        if(!name||!email||!password||!confirmPassword||!phone){
+        if(!name||!email||!password||!confirmPassword){
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The input is required'
@@ -48,17 +48,14 @@ const loginUser = async (req, res) => {
             })
         }
         const result = await UserService.loginUser(req.body)
-        const { refresh_token, access_token } = result
-        // res.cookie('refresh_token', refresh_token, {
-        //     httpOnly: true,
-        //     secure: false,
-        //     sameSite: 'strict',
-        //     path: '/',
-        // })
-        return res.status(200).json({
-            access_token,
-            refresh_token
+        const { refresh_token, ...newReponse } = result
+        res.cookie('refresh_token', refresh_token, {
+            httpOnly: true,
+            secure: false,//khi nào deploy để thành true
+            sameSite: 'strict',
+            path: '/',
         })
+        return res.status(200).json({...newReponse, refresh_token})
     } catch (e) {
         return res.status(404).json({
             message: e
@@ -153,11 +150,12 @@ const getDetailsUser = async (req, res) => {
 
 const refreshToken = async (req, res) => {
     try {
-        let token = req.headers.token.split(' ')[1]
+        // console.log(req.cookies);
+        let token = req.headers.cookies //headers.split(' ')[1]
         if (!token) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The token is required'
+                message: 'The token is requiredffffffffff'
             })
         }
         const result = await JwtService.refreshTokenJwtService(token)

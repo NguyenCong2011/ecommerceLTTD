@@ -10,7 +10,7 @@ router.put('/updateuser/:id', authUserMiddleWare, userController.updateUser)
 router.delete('/deleteuser/:id', authMiddleWare, userController.deleteUser)
 router.get('/getAll', authMiddleWare, userController.getAllUser)
 router.get('/getdetails/:id', authUserMiddleWare, userController.getDetailsUser)
-router.get('/refreshtoken',authMiddleWare, userController.refreshToken)
+router.get('/refreshtoken', userController.refreshToken)//tạo access token khi access token hết hạn
 router.post('/deletemany', authMiddleWare, userController.deleteMany)
 
 module.exports = router
