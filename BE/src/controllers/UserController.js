@@ -1,5 +1,7 @@
 const UserService = require('../services/UserService')
 const JwtService = require('../services/JwtService')
+// const multer=require('multer')
+// const path=require('path')
 
 const createUser = async (req, res) => {
     try {

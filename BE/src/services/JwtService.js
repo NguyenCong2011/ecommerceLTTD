@@ -1,9 +1,8 @@
 const jwt = require('jsonwebtoken')
 
 const genneralAccessToken = async (payload) => {
-    const access_token = jwt.sign({
-        payload
-    },'access_token', { expiresIn: '30s' })
+    const access_token = jwt.sign({payload
+    },'access_token', { expiresIn: '50s' })
 
     return access_token
 }

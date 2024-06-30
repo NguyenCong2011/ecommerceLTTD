@@ -15,7 +15,7 @@ const createProduct = (newProduct) => {
             }
             const newProduct = await Product.create({
                 name, 
-                image, 
+                image,
                 type, 
                 countInStock: Number(countInStock), 
                 price, 
@@ -87,7 +87,7 @@ const deleteProduct = (id) => {
 const deleteManyProduct = (ids) => {
     return new Promise(async (resolve, reject) => {
         try {
-            await Product.deleteMany({ _id: ids })
+            await Product.deleteMany({ _id:{$in:ids} })
             resolve({
                 status: 'OK',
                 message: 'Delete product success',

@@ -1,12 +1,12 @@
 const Order = require("../models/OrderProduct")
 const Product = require("../models/ProductModel")
-const EmailService = require("../services/EmailService")
+// const EmailService = require("../services/EmailService")
 
 const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
-        const { orderItems,paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone,user, isPaid, paidAt,email } = newOrder
+        const { orderitems,paymentmethod, itemprice, shippingprice ,totalprice, user,fullname,address,phone,city} = newOrder
         try {
-            const promises = orderItems.map(async (order) => {
+            const promises = orderitems.map(async (order) => {
                 const productData = await Product.findOneAndUpdate(
                     {
                     _id: order.product,
@@ -24,7 +24,7 @@ const createOrder = (newOrder) => {
                         message: 'SUCCESS'
                     }
                 }
-                 else {
+                else {
                     return{
                         status: 'OK',
                         message: 'ERR',
@@ -43,31 +43,38 @@ const createOrder = (newOrder) => {
                     status: 'ERR',
                     message: `San pham voi id: ${arrId.join(',')} khong du hang`
                 })
-            } else {
+            } 
+            else {
                 const createdOrder = await Order.create({
-                    orderItems,
-                    shippingAddress: {
-                        fullName,
+                    orderitems,
+                    shippingaddress: {
+                        fullname,
                         address,
                         city, phone
                     },
-                    paymentMethod,
-                    itemsPrice,
-                    shippingPrice,
-                    totalPrice,
+                    paymentmethod,
+                    itemprice,
+                    shippingprice,
+                    totalprice,
                     user: user,
-                    isPaid, paidAt
+                    // isPaid,
+                    // paidAt
                 })
-                if (createdOrder) {
-                    await EmailService.sendEmailCreateOrder(email,orderItems)
-                    resolve({
-                        status: 'OK',
-                        message: 'success'
-                    })
-                }
+                resolve({
+                    status: 'OK',
+                    message: 'success',
+                    data:createdOrder
+                })
+
+                // if (createdOrder) {
+                //     await EmailService.sendEmailCreateOrder(email,orderitems)
+                    // resolve({
+                    //     status: 'OK',
+                    //     message: 'success'
+                    // })
+                // }
             }
         } catch (e) {
-        //   console.log('e', e)
             reject(e)
         }
     })
@@ -124,14 +131,12 @@ const getOrderDetails = (id) => {
                     message: 'The order is not defined'
                 })
             }
-
             resolve({
                 status: 'OK',
                 message: 'SUCESSS',
                 data: order
             })
         } catch (e) {
-            // console.log('e', e)
             reject(e)
         }
     })

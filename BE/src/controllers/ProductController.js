@@ -2,19 +2,35 @@ const ProductService = require('../services/Productservice')
 
 const createProduct = async (req, res) => {
     try {
-        const { name, image, type, countInStock, price, rating, description } = req.body
-        if (!name || !image || !type || !countInStock || !price || !rating) {
+        const { name, type, countInStock, price, rating, description,discount } = req.body
+        const image=req.file
+        if (!image || !image.path) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'No file uploaded or invalid file'
+            });
+        }
+        if (!name ||!type || !countInStock || !price || !rating||!discount) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The input is required'
+                message: 'The input is requiredggggggggggg'
             })
         }
-        const result = await ProductService.createProduct(req.body)
+        const imagePath = image.path;
+        const newProduct = {
+            name,
+            image: imagePath,
+            type,
+            countInStock: Number(countInStock),
+            price,
+            rating,
+            description,
+            discount: Number(discount)
+        };
+        const result = await ProductService.createProduct(newProduct)
         return res.status(200).json(result)
-    } catch (e) {
-        return res.status(404).json({
-            message: e
-        })
+    } catch (error) {
+        console.log(error)
     }
 }
 
@@ -94,7 +110,7 @@ const deleteMany = async (req, res) => {
 const getAllProduct = async (req, res) => {
     try {
         const { limit, page, sort, filter } = req.query
-        const result = await ProductService.getAllProduct(Number(limit) || 8, Number(page) || 0, sort, filter)
+        const result = await ProductService.getAllProduct(Number(limit) || null, Number(page) || 0, sort, filter)
         return res.status(200).json(result)
     } catch (e) {
         return res.status(404).json({

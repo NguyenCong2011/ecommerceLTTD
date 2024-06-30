@@ -7,10 +7,10 @@ const sendEmailCreateOrder = async (email,orderItems) => {
   let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
-    secure: true, // true for 465, false for other ports
+    secure: true,
     auth: {
-      user: process.env.MAIL_ACCOUNT, // generated ethereal user
-      pass: process.env.MAIL_PASSWORD, // generated ethereal password
+      user: process.env.MAIL_ACCOUNT, 
+      pass: process.env.MAIL_PASSWORD,
     },
   });
   transporter.use('compile', inlineBase64({cidPrefix: 'somePrefix_'}));
@@ -28,10 +28,10 @@ const sendEmailCreateOrder = async (email,orderItems) => {
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: process.env.MAIL_ACCOUNT, // sender address
+    from: process.env.MAIL_ACCOUNT,
     to: email, // list of receivers
-    subject: "Bạn đã đặt hàng tại shop LẬP trình thật dễ", // Subject line
-    text: "Hello world?", // plain text body
+    subject: "Bạn đã đặt hàng tại shop",
+    text: "Hello world?",
     html: `<div><b>Bạn đã đặt hàng thành công tại shop Lập trình thật dễ</b></div> ${listItem}`,
     attachments: attachImage,
   });
