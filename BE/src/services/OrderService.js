@@ -2,83 +2,83 @@ const Order = require("../models/OrderProduct")
 const Product = require("../models/ProductModel")
 // const EmailService = require("../services/EmailService")
 
-const createOrder = (newOrder) => {
-    return new Promise(async (resolve, reject) => {
-        const { orderitems,paymentmethod, itemprice, shippingprice ,totalprice, user,fullname,address,phone,city} = newOrder
-        try {
-            const promises = orderitems.map(async (order) => {
-                const productData = await Product.findOneAndUpdate(
-                    {
+const createOrder = async (newOrder) => {
+    const { orderitems, paymentmethod, itemprice, shippingprice, totalprice, user, fullname, address, phone, city } = newOrder;
+    try {
+        let itemprice = 0;
+        for (let order of orderitems) {
+            const product = await Product.findById(order.product);
+            if (!product) {
+                throw new Error(`Product with id ${order.product} not found`);
+            }
+            itemprice += product.price * order.amount;
+        }
+        const totalprice = itemprice + shippingprice;
+
+        const promises = orderitems.map(async (order) => {
+            const productData = await Product.findOneAndUpdate(
+                {
                     _id: order.product,
-                    countInStock: {$gte: order.amount}
-                    },
-                    {$inc: {
+                    countInStock: { $gte: order.amount }
+                },
+                {
+                    $inc: {
                         countInStock: -order.amount,
                         selled: +order.amount
-                    }},
-                    {new: true}
-                )
-                if(productData) {
-                    return {
-                        status: 'OK',
-                        message: 'SUCCESS'
                     }
-                }
-                else {
-                    return{
-                        status: 'OK',
-                        message: 'ERR',
-                        id: order.product
-                    }
-                }
-            })
-            const results = await Promise.all(promises)
-            const newData = results && results.filter((item) => item.id)
-            if(newData.length) {
-                const arrId = []
-                newData.forEach((item) => {
-                    arrId.push(item.id)
-                })
-                resolve({
-                    status: 'ERR',
-                    message: `San pham voi id: ${arrId.join(',')} khong du hang`
-                })
-            } 
-            else {
-                const createdOrder = await Order.create({
-                    orderitems,
-                    shippingaddress: {
-                        fullname,
-                        address,
-                        city, phone
-                    },
-                    paymentmethod,
-                    itemprice,
-                    shippingprice,
-                    totalprice,
-                    user: user,
-                    // isPaid,
-                    // paidAt
-                })
-                resolve({
+                },
+                { new: true }
+            );
+            if (productData) {
+                return {
                     status: 'OK',
-                    message: 'success',
-                    data:createdOrder
-                })
-
-                // if (createdOrder) {
-                //     await EmailService.sendEmailCreateOrder(email,orderitems)
-                    // resolve({
-                    //     status: 'OK',
-                    //     message: 'success'
-                    // })
-                // }
+                    message: 'SUCCESS'
+                };
+            } else {
+                return {
+                    status: 'OK',
+                    message: 'ERR',
+                    id: order.product
+                }
             }
-        } catch (e) {
-            reject(e)
+        })
+        const results = await Promise.all(promises);
+        const newData = results.filter(item => item.id);
+
+        if (newData.length > 0) {
+            const arrId = newData.map(item => item.id);
+            throw new Error(`San pham voi id: ${arrId.join(',')} khong du hang`);
+        }else{
+            const createdOrder = await Order.create({
+                orderitems,
+                shippingaddress:{fullname,address,city,phone},
+                paymentmethod,
+                itemprice,
+                shippingprice,
+                totalprice,
+                user,
+                // isPaid,
+                // paidAt
+            })
+            // if (createdOrder) {
+            //     await EmailService.sendEmailCreateOrder(email,orderitems)
+            //     resolve({
+            //         status: 'OK',
+            //         message: 'success'
+            //     })
+            // }
+            return {
+                status: 'OK',
+                message: 'success',
+                data: createdOrder
+            }
         }
-    })
+
+    } catch (e) {
+        throw new Error(e.message);
+    }
 }
+    
 
 // const deleteManyProduct = (ids) => {
 //     return new Promise(async (resolve, reject) => {
