@@ -28,16 +28,16 @@ const authUserMiddleWare = (req, res, next) => {
     jwt.verify(token, 'access_token', function (err, user) {
         if (err) {
             return res.status(404).json({
-                message: 'The authemticationnnn',
+                message: 'The authemticationnnnmmmmmmmm',
                 status: 'ERROR'
             })
         }
-
-        if (user?.isAdmin || user?.id === userId) {
+        const {payload}=user
+        if (payload?.isAdmin || payload?.id === userId) {
             next()
         } else {
             return res.status(404).json({
-                message: 'The authemtication',
+                message: 'The authemticationggggggggg',
                 status: 'ERROR'
             })
         }

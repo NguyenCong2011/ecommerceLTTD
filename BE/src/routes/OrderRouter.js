@@ -6,7 +6,7 @@ const OrderController = require('../controllers/OrderController');
 router.post('/createOrder', OrderController.createOrder)//authUserMiddleWare
 router.get('/get-all-order/:id', OrderController.getAllOrderDetails)//authUserMiddleWare
 router.get('/get-details-order/:id', OrderController.getOrderDetails)//authUserMiddleWare
-router.delete('/cancel-order/:id', OrderController.cancelOrderDetails)//authUserMiddleWare
+router.delete('/cancelorder', OrderController.cancelOrder)//authUserMiddleWare
 router.get('/get-all-order', OrderController.getAllOrder)//authMiddleWare
 
 

@@ -2,7 +2,7 @@ const ProductService = require('../services/Productservice')
 
 const createProduct = async (req, res) => {
     try {
-        const { name, type, countInStock, price, rating, description,discount } = req.body
+        const { name, type, countInStock, price, rating, description,discount,selled } = req.body
         const image=req.file
         if (!image || !image.path) {
             return res.status(400).json({
@@ -23,6 +23,7 @@ const createProduct = async (req, res) => {
             type,
             countInStock: Number(countInStock),
             price,
+            selled,
             rating,
             description,
             discount: Number(discount)
